@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semáforo de Poluição</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-light">
+
+    <!-- Header -->
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container d-flex justify-content-center">
+            <span class="navbar-brand mb-0 h1">🚦 Semáforo de Poluição</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row gx-5">
+            <!-- Coluna Esquerda: Semáforo e Estado -->
+            <div class="col-lg-5 mb-4 d-flex flex-column align-items-center">
+
+                <h3 class="mb-4 text-center">Qualidade Acústica</h3>
+
+                <!-- Semáforo -->
+                <div class="traffic-light bg-dark p-3 rounded-pill shadow-lg mb-4">
+                    <div class="light light-off" id="light-red"></div>
+                    <div class="light light-off" id="light-yellow"></div>
+                    <div class="light light-off" id="light-green"></div>
+                </div>
+
+                <!-- Info do Estado -->
+                <div class="card w-100 shadow-sm border-0 bg-white">
+                    <div class="card-body text-center" id="status-card-body">
+                        <h4 class="card-title fw-bold" id="status-title">Aguardando...</h4>
+                        <p class="card-text text-muted" id="status-text">
+                            O sistema está a carregar e a aguardar os primeiros dados do sensor de som.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Coluna Direita: Dados dos Sensores -->
+            <div class="col-lg-7">
+                <h3 class="mb-4">Monitorização de Sensores</h3>
+
+                <div class="row g-3">
+                    <!-- Clima -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100 border-0 border-start border-primary border-4 interactive-card"
+                            data-bs-toggle="modal" data-bs-target="#climaModal">
+                            <div class="card-body">
+                                <h6 class="text-uppercase text-muted mb-3 fw-bold">Clima</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>🌡️ Temperatura</span>
+                                    <span class="fw-bold" id="val-temp">-- °C</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>💧 Humidade</span>
+                                    <span class="fw-bold" id="val-hum">-- %</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>📊 Pressão</span>
+                                    <span class="fw-bold" id="val-press">-- hPa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Poeiras -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100 border-0 border-start border-secondary border-4 interactive-card"
+                            data-bs-toggle="modal" data-bs-target="#poeirasModal">
+                            <div class="card-body">
+                                <h6 class="text-uppercase text-muted mb-3 fw-bold">Poeiras (Material Particulado)</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>💨 PM1.0</span>
+                                    <span class="fw-bold" id="val-pm1">--</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>💨 PM2.5</span>
+                                    <span class="fw-bold" id="val-pm25">--</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>💨 PM10</span>
+                                    <span class="fw-bold" id="val-pm10">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ruído -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100 border-0 border-start border-warning border-4 interactive-card"
+                            data-bs-toggle="modal" data-bs-target="#ruidoModal">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                                <h6 class="text-uppercase text-muted mb-2 fw-bold w-100 text-start">Som Real-Time</h6>
+                                <h1 class="display-4 fw-bold mb-0 text-warning" id="val-sound">--</h1>
+                                <span class="text-muted">dBA</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gases & Qualidade do Ar Geral -->
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100 border-0 border-start border-info border-4 interactive-card"
+                            data-bs-toggle="modal" data-bs-target="#gasesModal">
+                            <div class="card-body">
+                                <h6 class="text-uppercase text-muted mb-3 fw-bold">Gases / Ar (Global)</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>🧪 Gases Tópico</span>
+                                    <span class="fw-bold" id="val-gas">--</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>🌍 Índice Ar</span>
+                                    <span class="fw-bold" id="val-indquar">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer de Conexão -->
+    <div class="fixed-bottom p-2 bg-dark text-white text-center w-100" style="font-size: 0.85rem;">
+        Status MQTT: <span id="mqtt-status" class="badge bg-secondary">A conectar...</span> | Tópicos Subscritos
+    </div>
+
+    <!-- Modais -->
+    <!-- Modal Clima -->
+    <div class="modal fade" id="climaModal" tabindex="-1" aria-labelledby="climaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="climaModalLabel">⛅ Clima</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Este painel apresenta dados meteorológicos básicos da zona envolvente:</p>
+                    <ul>
+                        <li><strong>Temperatura (°C):</strong> Indica o nível de calor ambiente. Temperaturas
+                            confortáveis variam tipicamente entre 18°C e 24°C.</li>
+                        <li><strong>Humidade (%):</strong> Representa a quantidade de vapor de água presente no ar.
+                            Níveis entre 40% a 60% são ideais para a saúde e bem-estar.</li>
+                        <li><strong>Pressão (hPa):</strong> Mede a pressão atmosférica local. Variações rápidas podem
+                            indicar mudanças nas condições de tempo (frentes frias/quentes).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Poeiras -->
+    <div class="modal fade" id="poeirasModal" tabindex="-1" aria-labelledby="poeirasModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title" id="poeirasModalLabel">💨 Poeiras (Material Particulado)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>As poeiras inaláveis são medidas em microgramas por metro cúbico (µg/m³) e classificam-se pelo
+                        seu diâmetro, sendo um dos maiores perigos respiratórios nas cidades:</p>
+                    <ul>
+                        <li><strong>PM1.0:</strong> Partículas extremamente finas (menos de 1 micrómetro). Podem entrar
+                            diretamente na corrente sanguínea.</li>
+                        <li><strong>PM2.5:</strong> Partículas finas. São altamente prejudiciais por se alojarem nos
+                            pulmões, muitas vezes oriundas de poluição automóvel.</li>
+                        <li><strong>PM10:</strong> Partículas inaláveis maiores, como pó de obras, pólen e partículas
+                            poeirentas visíveis, podendo causar irritação.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ruído -->
+    <div class="modal fade" id="ruidoModal" tabindex="-1" aria-labelledby="ruidoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="ruidoModalLabel">🔊 Ruído e Qualidade Acústica</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>A poluição sonora afeta diretamente a concentração, o sistema nervoso e o bem-estar:</p>
+                    <ul>
+                        <li><strong>Som Real-Time (dBA):</strong> Nível de ruído ambiente em decibéis. A letra "A" (dBA)
+                            indica que o sensor simula a sensibilidade do ouvido humano a diferentes frequências.</li>
+                    </ul>
+                    <hr>
+                    <p class="mb-2"><strong>A regra visual do Semáforo no nosso software:</strong></p>
+                    <ul class="mb-0">
+                        <li>🟢 <strong>Até 69 dBA:</strong> Ambiente Calmo.</li>
+                        <li>🟡 <strong>70 a 75 dBA:</strong> Moderado. Exige maior atenção.</li>
+                        <li>🔴 <strong>De 76 dBA para cima:</strong> Ruidoso. A exposição prolongada pode ser perigosa
+                            para a audição.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gases -->
+    <div class="modal fade" id="gasesModal" tabindex="-1" aria-labelledby="gasesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-dark">
+                    <h5 class="modal-title" id="gasesModalLabel">🧪 Qualidade do Ar e Gases</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>O ar que respiramos contém componentes gasosas que afetam a nossa saúde a longo prazo:</p>
+                    <ul>
+                        <li><strong>Gases Tópico:</strong> Refere-se à concentração de compostos específicos capturados
+                            pelos sensores MQ instalados no Semáforo (podem ser CO2, Monóxido de Carbono ou Compostos
+                            Orgânicos Voláteis).</li>
+                        <li><strong>Índice do Ar (IndQuAr):</strong> Uma classificação numérica ou categoria geral
+                            gerada no projeto que resume a qualidade global atual do ar na zona de medição, englobando
+                            todos os perigos de contaminação apurados.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- MQTT.js para client WebSockets -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
