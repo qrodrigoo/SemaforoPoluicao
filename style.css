@@ -1,0 +1,84 @@
+/* 
+    Estilos para o Semáforo de Poluição
+*/
+
+body {
+    background-color: #f4f6F9;
+    /* Fundo suave */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 50px;
+    /* Para o footer fixed não sobrepor nada */
+}
+
+/* Semáforo CSS */
+.traffic-light {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 140px;
+    border: 4px solid #333;
+}
+
+.light {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #111;
+    /* Cor apagada base */
+    border: 3px solid rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Cores das luzes - APAGADAS (cinzentas mas com a tonalidade subtil) */
+.light-off#light-red {
+    background-color: #4a0000;
+}
+
+.light-off#light-yellow {
+    background-color: #4a4a00;
+}
+
+.light-off#light-green {
+    background-color: #004a00;
+}
+
+/* Cores das luzes - ACESAS com GLOW Effect */
+.light-on#light-red {
+    background-color: #ff3333;
+    box-shadow: 0 0 30px #ff3333, inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.light-on#light-yellow {
+    background-color: #ffff33;
+    box-shadow: 0 0 30px #ffff33, inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.light-on#light-green {
+    background-color: #33ff33;
+    box-shadow: 0 0 30px #33ff33, inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Transições suaves para os Card values */
+.fw-bold {
+    transition: color 0.3s;
+}
+
+/* Ajustes no Status Card */
+#status-card-body {
+    transition: background-color 0.5s, color 0.5s;
+    border-radius: 8px;
+}
+
+/* Efeito Hover nos Cartões dos Sensores */
+.interactive-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.interactive-card:hover {
+    transform: scale(1.05);
+    /* Faz o cartão crescer 5% */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+    z-index: 10;
+}
