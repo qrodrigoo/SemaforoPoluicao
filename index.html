@@ -14,13 +14,21 @@
 <body class="bg-light">
 
     <!-- Header -->
-    <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm">
-        <div class="container d-flex justify-content-center">
-            <span class="navbar-brand mb-0 h1">🚦 Semáforo de Poluição</span>
+    <nav class="navbar navbar-dark bg-dark mb-4 shadow-sm py-3">
+        <div class="container d-flex justify-content-center position-relative">
+            <!-- Logotipo da Escola adaptado com fundo maior -->
+            <div class="position-absolute start-0 ms-3 d-flex align-items-center justify-content-center bg-white rounded shadow-sm"
+                style="top: 50%; transform: translateY(-50%); padding: 10px;">
+                <img src="logo.png" alt="Logotipo da Escola" style="height: 55px; object-fit: contain;">
+            </div>
+
+            <span class="navbar-brand mb-0 h2 fw-bold">🚦 Semáforo de Poluição</span>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container pt-3">
+
+
         <div class="row gx-5">
             <!-- Coluna Esquerda: Semáforo e Estado -->
             <div class="col-lg-5 mb-4 d-flex flex-column align-items-center">
@@ -28,7 +36,9 @@
                 <h3 class="mb-4 text-center">Qualidade Acústica</h3>
 
                 <!-- Semáforo -->
-                <div class="traffic-light bg-dark p-3 rounded-pill shadow-lg mb-4">
+                <div class="traffic-light bg-dark p-3 rounded-pill shadow-lg mb-4 interactive-card"
+                    data-bs-toggle="modal" data-bs-target="#ruidoModal"
+                    title="Clique para ver os detalhes sobre o Ruído">
                     <div class="light light-off" id="light-red"></div>
                     <div class="light light-off" id="light-yellow"></div>
                     <div class="light light-off" id="light-green"></div>
@@ -131,8 +141,10 @@
     </div>
 
     <!-- Footer de Conexão -->
-    <div class="fixed-bottom p-2 bg-dark text-white text-center w-100" style="font-size: 0.85rem;">
-        Status MQTT: <span id="mqtt-status" class="badge bg-secondary">A conectar...</span> | Tópicos Subscritos
+    <div class="fixed-bottom p-2 bg-dark text-white text-center w-100 d-flex justify-content-center gap-4"
+        style="font-size: 0.85rem;">
+        <div>Servidor MQTT: <span id="mqtt-status" class="badge bg-secondary">A conectar...</span></div>
+        <div>Sensor Físico: <span id="hardware-status" class="badge bg-danger">Desconectado</span></div>
     </div>
 
     <!-- Modais -->

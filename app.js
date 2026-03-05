@@ -32,6 +32,11 @@ const valGas = document.getElementById('val-gas');
 const valIndQuar = document.getElementById('val-indquar');
 
 const mqttStatus = document.getElementById('mqtt-status');
+const hardwareStatus = document.getElementById('hardware-status'); // Novo indicador de hardware
+
+// Watchdog para verificar se o sensor físico (Semáforo) ainda está vivo
+let lastMessageTime = 0;
+const WATCHDOG_TIMEOUT_MS = 5000; // 5 segundos sem receber = Desconectado
 
 // Connect to broker
 const client = mqtt.connect(MQTT_BROKER);
@@ -56,6 +61,11 @@ client.on('error', function (err) {
 });
 
 client.on('message', function (topic, message) {
+    // Atualiza o tempo da última mensagem recebida (regista que o Arduino está vivo!)
+    lastMessageTime = Date.now();
+    hardwareStatus.textContent = "A enviar dados...";
+    hardwareStatus.className = "badge bg-success";
+
     // message é um Buffer
     const msgStr = message.toString().trim();
     console.log(`Recebido em [${topic}]: ${msgStr}`);
@@ -195,3 +205,17 @@ function updateTrafficLightForSound(ruidoDba) {
         statusText.textContent = "Níveis de ruído altos! Cuidado, a exposição prolongada prejudica a audição.";
     }
 }
+
+// Loop que verifica a cada segundo se passou muito tempo sem dados
+setInterval(() => {
+    const timeSinceLastMessage = Date.now() - lastMessageTime;
+
+    // Se passaram mais de X segundos e já recebemos alguma coisa antes ou se acabou de ligar
+    if (timeSinceLastMessage > WATCHDOG_TIMEOUT_MS) {
+        hardwareStatus.textContent = "Sem sinal...";
+        hardwareStatus.className = "badge bg-danger";
+
+        // Podemos adicionar um visual "cinzento" ao status se quisermos, 
+        // para indicar perda de sinal. Mas mexer no badge já é nítido.
+    }
+}, 1000);
